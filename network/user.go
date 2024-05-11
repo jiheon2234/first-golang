@@ -1,6 +1,7 @@
 package network
 
 import (
+	"CRUD-SERVER/types"
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"sync"
@@ -34,9 +35,16 @@ func newUserRouter(router *Network) *userRouter {
 
 func (u *userRouter) create(c *gin.Context) {
 	fmt.Println("create!!!!!!!!!!!!!!")
+
 }
 func (u *userRouter) get(c *gin.Context) {
 	fmt.Println("get!!!!!!!!!!!!!!")
+	u.router.okResponse(c, &types.UserResponse{
+		ApiResponse: &types.ApiResponse{Result: 1,
+			Description: "get Sucesss!!!!",
+		},
+		User: nil,
+	})
 }
 func (u *userRouter) update(c *gin.Context) {
 	fmt.Println("update!!!!!!!!!!!!!!")

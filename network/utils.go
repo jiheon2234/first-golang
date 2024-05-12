@@ -18,7 +18,7 @@ func (n *Network) registerDELETE(path string, handler ...gin.HandlerFunc) gin.IR
 
 /// Response 형태 맞추기
 
-func (n *Network) okResponse(c *gin.Context, result any) {
+func (n *Network) okResponse(c *gin.Context, result interface{}) {
 	c.JSON(200, result)
 }
 

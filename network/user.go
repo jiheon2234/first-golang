@@ -1,6 +1,7 @@
 package network
 
 import (
+	"CRUD-SERVER/service"
 	"CRUD-SERVER/types"
 	"fmt"
 	"github.com/gin-gonic/gin"
@@ -14,13 +15,15 @@ var (
 
 type userRouter struct {
 	router *Network
-	//service
+
+	userService *service.User
 }
 
-func newUserRouter(router *Network) *userRouter {
+func newUserRouter(router *Network, userService *service.User) *userRouter {
 	userRouterInit.Do(func() {
 		userRouterInstance = &userRouter{
-			router: router,
+			router:      router,
+			userService: userService,
 		}
 
 		router.registerGET("/", userRouterInstance.get)
@@ -36,19 +39,28 @@ func newUserRouter(router *Network) *userRouter {
 func (u *userRouter) create(c *gin.Context) {
 	fmt.Println("create!!!!!!!!!!!!!!")
 
+	u.userService.Create(nil)
+
+	u.router.okResponse(c, types.NewApiResponse(
+		"create Sucesss!!!!", 1))
+
 }
 func (u *userRouter) get(c *gin.Context) {
 	fmt.Println("get!!!!!!!!!!!!!!")
+
 	u.router.okResponse(c, &types.UserResponse{
 		ApiResponse: &types.ApiResponse{Result: 1,
 			Description: "get Sucesss!!!!",
 		},
-		User: nil,
+		Users: u.userService.Get(),
 	})
 }
 func (u *userRouter) update(c *gin.Context) {
+	u.userService.Update(nil, nil)
 	fmt.Println("update!!!!!!!!!!!!!!")
 }
 func (u *userRouter) delete(c *gin.Context) {
 	fmt.Println("delete!!!!!!!!!!!!!!")
+
+	u.userService.Delete(nil)
 }

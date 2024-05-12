@@ -38,29 +38,62 @@ func newUserRouter(router *Network, userService *service.User) *userRouter {
 
 func (u *userRouter) create(c *gin.Context) {
 	fmt.Println("create!!!!!!!!!!!!!!")
+	var req types.CreateRequest
 
-	u.userService.Create(nil)
+	if err := c.ShouldBindJSON(&req); err != nil {
+		u.router.failedResponse(c, types.CreateUserResponse{
+			ApiResponse: types.NewApiResponse("바인딩 오류", -1, "바인딩 오류"),
+		})
+	} else if err := u.userService.Create(req.ToUser()); err != nil {
+		u.router.failedResponse(c, &types.CreateUserResponse{ApiResponse: types.NewApiResponse("Create 에러", -1, err.Error())})
+	} else {
+		u.router.okResponse(c, &types.CreateUserResponse{
+			ApiResponse: types.NewApiResponse("Create 성공", 1, nil),
+		})
 
-	u.router.okResponse(c, types.NewApiResponse(
-		"create Sucesss!!!!", 1))
+	}
 
 }
 func (u *userRouter) get(c *gin.Context) {
 	fmt.Println("get!!!!!!!!!!!!!!")
 
-	u.router.okResponse(c, &types.UserResponse{
-		ApiResponse: &types.ApiResponse{Result: 1,
-			Description: "get Sucesss!!!!",
-		},
-		Users: u.userService.Get(),
+	u.router.okResponse(c, &types.GetUserResponse{
+		ApiResponse: types.NewApiResponse("success", 1, nil),
+		Users:       u.userService.Get(),
 	})
 }
 func (u *userRouter) update(c *gin.Context) {
-	u.userService.Update(nil, nil)
+	var req types.UpdateUserRequest
 	fmt.Println("update!!!!!!!!!!!!!!")
+
+	if err := c.ShouldBindJSON(&req); err != nil {
+		u.router.failedResponse(c, types.CreateUserResponse{
+			ApiResponse: types.NewApiResponse("바인딩 오류", -1, "바인딩 오류"),
+		})
+	} else if err := u.userService.Update(req.Name, req.UpdateAge); err != nil {
+		u.router.failedResponse(c, &types.UpdateUserResponse{ApiResponse: types.NewApiResponse("UPDATE 에러", -1, err.Error())})
+	} else {
+		u.router.okResponse(c, &types.UpdateUserResponse{
+			ApiResponse: types.NewApiResponse("update success", 1, nil),
+		})
+	}
+
 }
 func (u *userRouter) delete(c *gin.Context) {
 	fmt.Println("delete!!!!!!!!!!!!!!")
+	var req types.DeleteRequest
 
-	u.userService.Delete(nil)
+	if err := c.ShouldBindJSON(&req); err != nil {
+		u.router.failedResponse(c, &types.CreateUserResponse{
+			ApiResponse: types.NewApiResponse("binding err", 1, err.Error()),
+		})
+	} else if err := u.userService.Delete(req.ToUser()); err != nil {
+		u.router.failedResponse(c, &types.CreateUserResponse{
+			ApiResponse: types.NewApiResponse("Delete err", 1, err.Error()),
+		})
+	}
+
+	u.router.okResponse(c, &types.DeleteUserResponse{
+		ApiResponse: types.NewApiResponse("삭", 1, nil),
+	})
 }

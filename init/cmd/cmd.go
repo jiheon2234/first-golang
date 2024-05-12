@@ -23,6 +23,7 @@ func NewCmd(filePath string) *Cmd {
 	}
 
 	c.repository = repository.NewRepository()
+	fmt.Printf("%+v\n", c.repository)
 	c.service = service.NewService(c.repository)
 	c.network = network.NewNetwork(c.service)
 

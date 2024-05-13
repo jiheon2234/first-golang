@@ -2,7 +2,7 @@ package errors
 
 import "fmt"
 
-//에러처리
+//에러처리 패키지
 
 const (
 	NotFoundUser = iota
